@@ -15,12 +15,14 @@
 	import { mobile } from 'components';
 	import { config, searchLinks } from './data';
 	import { onMount } from 'svelte';
-	import { hotkey } from '@svelteuidev/composables';
+	import { hotkey, useOs } from '@svelteuidev/composables';
 
-	let recentSearches,
-		searchTerm = '',
-		matchingSearches = [],
-		modalOpened = false;
+	let recentSearches;
+	let searchTerm = '';
+	let matchingSearches = [];
+	let modalOpened = false;
+
+	const os = useOs();
 
 	function toggleTheme() {
 		colorScheme.update((v) => (v === 'light' ? 'dark' : 'light'));
@@ -94,7 +96,7 @@
 					<p style="margin-left: 0.5rem; font-size: 1.1rem">Search</p>
 				</div>
 				<div>
-					<Kbd>{navigator.platform === 'MacIntel' ? '⌘' : 'Ctrl'}</Kbd> + <Kbd>K</Kbd>
+					<Kbd>{os === 'macos' ? '⌘' : 'Ctrl'}</Kbd> + <Kbd>K</Kbd>
 				</div>
 			</Box>
 		</li>
@@ -123,10 +125,10 @@
 
 <Modal opened={modalOpened} on:close={changeModalState} title="SvelteUI Docs" overflow="inside">
 	<TextInput
+		autocomplete="off"
 		placeholder="Search..."
 		bind:value={searchTerm}
 		on:input={onSearchValueInput}
-		autocomplete="off"
 	>
 		<svelte:fragment slot="rightSection">
 			<MagnifyingGlass color="#228be6" size={20} />
